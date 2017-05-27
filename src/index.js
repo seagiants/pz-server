@@ -1,6 +1,8 @@
 import express from "express";
 import expressWS from "express-ws";
 
+const port = 9000;
+
 const app = express();
 // WebSocket capability
 expressWS(app);
@@ -18,12 +20,15 @@ app.get("/newgame", (req, res) => {
   });
 });
 
-app.ws("/ws-test", (ws, req) => {
+app.ws("/ws-test/:id", (ws, req) => {
+  let id = req.params.id;
+  console.log(`In ws channel with id ${id}`)
   ws.on("message", (msg) => {
-    console.log(`[${Date.now()}] Message received: ${msg}`)
+    console.log(`[${Date.now()}] Message received: ${msg}`);
+    ws.send("server received message: " + msg);
   });
 });
 
-app.listen(9000, () => {
-  console.log("PZ server started");
+app.listen(port, () => {
+  console.log(`PZ server started on http://localhost:${port}`);
 });
