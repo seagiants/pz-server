@@ -1,23 +1,25 @@
 import express from "express";
 import expressWS from "express-ws";
+import Game from "./Game";
 
+/* CONSTANTS */
 const port = 9000;
 
 const app = express();
 // WebSocket capability
 expressWS(app);
 
+/* DATA */
+
+
+/* ROUTES */
 app.get("/", (req, res) => {
   res.json({msg:"hello"});
 });
 
 app.get("/newgame", (req, res) => {
-  res.json({
-    gameId: 123456,
-    gameData: {
-      thing: "Full of game data"
-    }
-  });
+  let newGame = Game.withId(123456);
+  res.json(JSON.stringify(newGame));
 });
 
 app.ws("/ws-test/:id", (ws, req) => {
