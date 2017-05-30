@@ -1,6 +1,6 @@
 import express from "express";
 import expressWS from "express-ws";
-import Game from "./Game";
+import { gameBuilder } from "./Game";
 
 /* CONSTANTS */
 const port = 9000;
@@ -18,8 +18,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/newgame", (req, res) => {
-  let newGame = Game.withId(123456);
-  res.json(JSON.stringify(newGame));
+  let newGame = gameBuilder();
+  res.json(newGame);
 });
 
 app.ws("/ws-test/:id", (ws, req) => {
