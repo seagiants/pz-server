@@ -1,3 +1,5 @@
+import uuidV4 from "uuid/v4";
+
 /* Game statuses */
 const CREATED = "CREATED";
 const WAITING_FOR_SECOND_PLAYER = "WAITING_FOR_SECOND_PLAYER";
@@ -6,7 +8,7 @@ const FINISHED = "FINISHED";
 
 class Game {
   constructor(id) {
-    this.id = id;
+    this.id = uuidV4();
     this.gameMap = [];
     this.players = {
       playerOne: null,
