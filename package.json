@@ -3,6 +3,7 @@
     "backpack-core": "^0.3.0",
     "express": "^4.15.3",
     "express-ws": "^3.0.0",
+    "lodash.random": "^3.2.0",
     "uuid": "^3.0.1"
   },
   "scripts": {

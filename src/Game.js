@@ -1,4 +1,5 @@
 import uuidV4 from "uuid/v4";
+import {generateMap} from "./engine/map";
 
 /* Game statuses */
 const CREATED = "CREATED";
@@ -9,7 +10,7 @@ const FINISHED = "FINISHED";
 class Game {
   constructor(id) {
     this.id = uuidV4();
-    this.gameMap = [];
+    this.gameMap = generateMap(20,20);
     this.players = {
       playerOne: null,
       playerTwo: null
