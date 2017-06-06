@@ -10,22 +10,33 @@ const app = express();
 expressWS(app);
 
 /* DATA */
-
+const gameStore = [];
 
 /* ROUTES */
+
+// Home
 app.get("/", (req, res) => {
-  res.json({msg:"hello"});
+  res.json({ msg: "hello" });
 });
 
+// Game creation endpoint
 app.get("/newgame", (req, res) => {
   let builder = new GameBuilder();
-  res.json(builder.build());
+  let newGame = builder.build();
+  gameStore.push({ [newGame.id]: newGame });
+  res.json(newGame);
 });
 
+// List games in store, for debug only
+app.get("/store", (req, res) => {
+  res.json(gameStore);
+});
+
+// WebSocket endpoint
 app.ws("/ws-test/:id", (ws, req) => {
   let id = req.params.id;
-  console.log(`In ws channel with id ${id}`)
-  ws.on("message", (msg) => {
+  console.log(`In ws channel with id ${id}`);
+  ws.on("message", msg => {
     console.log(`[${Date.now()}] Message received: ${msg}`);
     ws.send("server received message: " + msg);
   });
