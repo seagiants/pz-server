@@ -35,7 +35,9 @@ app.get("/store", (req, res) => {
 // WebSocket endpoint
 app.ws("/ws-test/:id", (ws, req) => {
   let id = req.params.id;
-  console.log(`In ws channel with id ${id}`);
+  // FIXME identify one connection, not a user
+  let clientId = ws.upgradeReq.headers['sec-websocket-key'];
+  console.log(`In ws channel with id ${id}`, `connected user id is ${clientId}`);
   ws.on("message", msg => {
     console.log(`[${Date.now()}] Message received: ${msg}`);
     ws.send("server received message: " + msg);
