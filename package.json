@@ -7,6 +7,10 @@
     "uuid": "^3.0.1"
   },
   "scripts": {
-    "dev": "backpack"
+    "dev": "backpack",
+    "test": "jest src/**/*.test.*"
+  },
+  "devDependencies": {
+    "jest": "^20.0.4"
   }
 }
