@@ -8,7 +8,7 @@ describe("Event manager", () => {
 
   it("Throw an error when the payload is not looking good", () => {
     expect(() => {
-      eventManager({ randomKey: "randomValue" });
+      eventManager({ randomKey: "randomValue", id: 123456 });
     }).toThrow();
     expect(() => {
       eventManager({ type: "I have no id"});
