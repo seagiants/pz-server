@@ -1,11 +1,14 @@
 import express from "express";
 import expressWS from "express-ws";
+import cors from "cors";
 import { GameBuilder } from "./models/Game";
 
 /* CONSTANTS */
 const port = 9000;
 
 const app = express();
+// CORS, by default allowing everything =)
+app.use(cors());
 // WebSocket capability
 expressWS(app);
 
