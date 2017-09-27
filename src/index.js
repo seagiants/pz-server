@@ -27,13 +27,20 @@ app.get("/newgame", (req, res) => {
   console.log("[GET] Game creation request");
   let builder = new GameBuilder();
   let newGame = builder.build();
-  gameStore.push({ [newGame.id]: newGame });
+  gameStore.push(newGame);
   res.json(newGame);
 });
 
 // List games in store, for debug only
 app.get("/store", (req, res) => {
   res.json(gameStore);
+});
+
+app.get("/game/:id", (req, res) => {
+  console.log("[GET] Getting game by id");
+  let requestedID = req.params.id;
+  let requestedGame = gameStore.filter(game => game.id === requestedID).pop();
+  res.json(requestedGame);
 });
 
 // WebSocket endpoint
