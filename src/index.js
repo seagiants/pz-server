@@ -24,6 +24,7 @@ app.get("/", (req, res) => {
 
 // Game creation endpoint
 app.get("/newgame", (req, res) => {
+  console.log("[GET] Game creation request");
   let builder = new GameBuilder();
   let newGame = builder.build();
   gameStore.push({ [newGame.id]: newGame });
