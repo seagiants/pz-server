@@ -22,9 +22,10 @@ app.get("/", (req, res) => {
 
 // Game creation endpoint
 app.get("/newgame", (req, res) => {
-  console.log("[GET] Game creation request");
+  let playerName = req.query.playerName;
+  console.log(`[GET] Game creation request by ${playerName}`);
   let builder = new GameBuilder();
-  let newGame = builder.build();
+  let newGame = builder.withPlayerOne(playerName).build();
   gameStore.push(newGame);
   res.json(newGame);
 });

@@ -22,7 +22,9 @@ class Game {
     this.gameMap = gameMap;
   }
 
-  setPlayerOne(p1) {}
+  setPlayerOne(p1) {
+    this.players.playerOne = p1;
+  }
 
   setPlayerTwo(p2) {}
 }
