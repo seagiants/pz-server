@@ -2,10 +2,11 @@ import uuidV4 from "uuid/v4";
 import { generateMap } from "../engine/map";
 
 /* Game statuses */
-const CREATED = "CREATED";
-const WAITING_FOR_SECOND_PLAYER = "WAITING_FOR_SECOND_PLAYER";
-const STARTED = "STARTED";
-const FINISHED = "FINISHED";
+export const statuses = {
+  WAITING_FOR_SECOND_PLAYER : "WAITING_FOR_SECOND_PLAYER",
+  STARTED : "STARTED",
+  FINISHED : "FINISHED"
+};
 
 class Game {
   constructor() {
@@ -15,7 +16,7 @@ class Game {
       playerOne: null,
       playerTwo: null
     };
-    this.status = CREATED;
+    this.status = statuses.WAITING_FOR_SECOND_PLAYER;
   }
 
   setGameMap(gameMap) {
@@ -26,7 +27,13 @@ class Game {
     this.players.playerOne = p1;
   }
 
-  setPlayerTwo(p2) {}
+  setPlayerTwo(p2) {
+    this.players.playerTwo = p2;
+  }
+
+  getStatus() {
+    return this.status;
+  }
 }
 
 export class GameBuilder {

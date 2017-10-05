@@ -1,4 +1,4 @@
-import { GameBuilder } from "./Game";
+import { GameBuilder, statuses } from "./Game";
 
 describe("Game builder", () => {
   it("must return a Game with an id", () => {
@@ -10,6 +10,11 @@ describe("Game builder", () => {
   it("returns a game with a player one name", () => {
     let gb = new GameBuilder();
     let game = gb.withPlayerOne("Toto").build();
-    expect(game.this.players.playerOne === "Toto");
+    expect(game.players.playerOne).toBe("Toto");
+  });
+  it("return a created game with a ok status", () => {
+    let gb = new GameBuilder();
+    let game = gb.withPlayerOne("Toto").build();
+    expect(game.getStatus()).toBe(statuses.WAITING_FOR_SECOND_PLAYER);
   });
 });

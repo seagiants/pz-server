@@ -12,7 +12,7 @@ const check = event => {
 };
 
 /* Manage the processing depending on the event type */
-const eventManager = event => {
+const eventManager = (event) => {
   if (!check(event)) {
     throw new Error("Event received is not valid");
   }
