@@ -7,7 +7,7 @@ const baseTypes = [
 ];
 
 export function generateType(baseType, x, y) {
-  return { ...baseType, x: x, y: y, hidden: false, content: null };
+  return { ...baseType, x: x, y: y, hidden: true, content: null };
 }
 
 export function randType(i, j) {
