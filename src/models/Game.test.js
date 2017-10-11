@@ -12,7 +12,7 @@ describe("Game builder", () => {
     let game = gb.withPlayerOne("Toto").build();
     expect(game.players.playerOne).toBe("Toto");
   });
-  it("return a created game with a ok status", () => {
+  it("returns a created game with an ok status", () => {
     let gb = new GameBuilder();
     let game = gb.withPlayerOne("Toto").build();
     expect(game.getStatus()).toBe(statuses.WAITING_FOR_SECOND_PLAYER);

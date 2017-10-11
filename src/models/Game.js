@@ -1,4 +1,5 @@
 import uuidV4 from "uuid/v4";
+import CircularJSON from "circular-json";
 import { generateMap } from "../engine/map";
 
 /* Game statuses */
@@ -16,6 +17,10 @@ class Game {
       playerOne: null,
       playerTwo: null
     };
+    this.sockets = {
+      playerOneSocket: null,
+      playerTwoSocket: null
+    }
     this.status = statuses.WAITING_FOR_SECOND_PLAYER;
   }
 
@@ -29,6 +34,16 @@ class Game {
 
   setPlayerTwo(p2) {
     this.players.playerTwo = p2;
+  }
+
+  setPlayerOneSocket(so) {
+    //this.sockets.playerOneSocket = CircularJSON.stringify(so);
+    this.sockets.playerOneSocket = so;
+  }
+
+  getPlayerOneSocket() {
+    //return CircularJSON.parse(this.sockets.playerOneSocket);
+    return this.sockets.playerOneSocket;
   }
 
   getStatus() {

@@ -2,6 +2,7 @@ import express from "express";
 import expressWS from "express-ws";
 import cors from "cors";
 import { GameBuilder } from "./models/Game";
+import util from "util";
 
 /* ---------- CONSTANTS */
 const port = 9000;
@@ -26,14 +27,13 @@ app.get("/newgame", (req, res) => {
   console.log(`[GET] Game creation request by ${playerName}`);
   let builder = new GameBuilder();
   let newGame = builder.withPlayerOne(playerName).build();
+  console.log("New game created", newGame);
   gameStore.push(newGame);
+  console.log("gameStore --> ", gameStore);
   res.json(newGame);
 });
 
-// List games in store, for debug only
-app.get("/store", (req, res) => {
-  res.json(gameStore);
-});
+
 
 app.get("/games-list", (req, res) => {
   let gamesId = gameStore.map(game => ({ id: game.id }));
@@ -50,16 +50,29 @@ app.get("/game/:id", (req, res) => {
 // WebSocket endpoint
 app.ws("/ws-test/:id", (ws, req) => {
   let id = req.params.id;
-  // FIXME identify one connection, not a user
-  let clientId = ws.upgradeReq.headers["sec-websocket-key"];
-  console.log(
-    `In ws channel with id ${id}`,
-    `connected user id is ${clientId}`
-  );
-  ws.on("message", msg => {
+  console.log(`In ws channel with id ${id}`);
+  // Storing the ws in the corresponding game
+  const game = gameStore.filter(game => game.id === id).pop();
+  game.setPlayerOneSocket(ws); // FIXME BECUZ
+  ws.on("open", msg => {
     console.log(`[${Date.now()}] Message received: ${msg}`);
-    ws.send("server received message: " + msg);
+    ws.send("ACK from server");
   });
+});
+
+// ----- SPECIALS
+// List games in store, for debug only
+app.get("/store", (req, res) => {
+  // FIXME we do that becuz of Circular structure bug
+  const sanitized = util.inspect(gameStore);
+  res.json(sanitized);
+});
+
+app.get("/sendws/:id", (req, res) => {
+  let requestedID = req.params.id;
+  let requestedGame = gameStore.filter(game => game.id === requestedID).pop();
+  const socket = requestedGame.getPlayerOneSocket();
+  socket.send("Message sent from the server to the first player!!!");
 });
 
 app.listen(port, () => {
