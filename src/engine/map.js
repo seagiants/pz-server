@@ -1,13 +1,13 @@
 import random from "lodash.random";
 
 const baseTypes = [
-  { name: "river", color: "blue", hidden: true },
-  { name: "mountain", color: "grey", hidden: true },
-  { name: "grass", color: "green", hidden: true }
+  { name: "river", color: "blue" },
+  { name: "mountain", color: "grey" },
+  { name: "grass", color: "green" }
 ];
 
 export function generateType(baseType, x, y) {
-  return { ...baseType, x: x, y: y };
+  return { ...baseType, x: x, y: y, hidden: true, content: null };
 }
 
 export function randType(i, j) {
