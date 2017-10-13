@@ -13,7 +13,8 @@ app.use(cors()); // by default allowing everything =)
 expressWS(app);
 
 /* ---------- DATA */
-const gameStore = [];
+const gameStore = []; // TODO extract to a proper class / module
+const getGameById = id => gameStore.filter(game => game.id === id).pop();
 
 /* ---------- ROUTES */
 // Home
@@ -21,33 +22,44 @@ app.get("/", (req, res) => {
   res.json({ msg: "hello" });
 });
 
-// Game creation endpoint
+// ----- Game creation endpoint
 app.get("/newgame", (req, res) => {
   let playerName = req.query.playerName;
   console.log(`[GET] Game creation request by ${playerName}`);
   let builder = new GameBuilder();
   let newGame = builder.withPlayerOne(playerName).build();
-  console.log("New game created", newGame);
   gameStore.push(newGame);
-  console.log("gameStore --> ", gameStore);
   res.json(newGame);
 });
 
-
-
+// ----- List of created games
 app.get("/games-list", (req, res) => {
-  let gamesId = gameStore.map(game => ({ id: game.id }));
+  let gamesId = gameStore.map(game => ({
+    id: game.id,
+    url: `http://localhost:${port}/game/${game.id}`,
+    join: `http://localhost:${port}/join/${game.id}`
+  }));
   res.json(gamesId);
 });
 
+// ----- Game info
 app.get("/game/:id", (req, res) => {
   console.log("[GET] Getting game by id");
-  let requestedID = req.params.id;
-  let requestedGame = gameStore.filter(game => game.id === requestedID).pop();
+  const requestedID = req.params.id;
+  const requestedGame = getGameById(requestedID);
   res.json(requestedGame);
 });
 
-// WebSocket endpoint
+// ----- Join an existing game
+app.get("/join/:id", (req, res) => {
+  const game = getGameById(req.params.id);
+  const action = { type: "SWITCH_TO_GAME_SCREEN" };
+  game.getPlayerOneSocket().send(JSON.stringify(action));
+  // TODO set player two id and create a web socket
+  res.json({ msg: "to be implemented" });
+});
+
+// ----- WebSocket endpoint
 app.ws("/ws-test/:id", (ws, req) => {
   let id = req.params.id;
   console.log(`In ws channel with id ${id}`);
@@ -57,6 +69,9 @@ app.ws("/ws-test/:id", (ws, req) => {
   ws.on("open", msg => {
     console.log(`[${Date.now()}] Message received: ${msg}`);
     ws.send("ACK from server");
+  });
+  ws.on("message", message => {
+    console.log("[WS] Incoming message", message);
   });
 });
 
