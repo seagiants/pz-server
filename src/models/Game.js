@@ -24,8 +24,16 @@ class Game {
     this.status = statuses.WAITING_FOR_SECOND_PLAYER;
   }
 
+  getId() {
+    return this.id;
+  }
+
   setGameMap(gameMap) {
     this.gameMap = gameMap;
+  }
+
+  getGameMap() {
+    return this.gameMap;
   }
 
   setPlayerOne(p1) {

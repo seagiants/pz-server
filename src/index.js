@@ -55,17 +55,19 @@ app.get("/join/:id", (req, res) => {
   const game = getGameById(req.params.id);
   const action = { type: "SWITCH_TO_GAME_SCREEN" };
   game.getPlayerOneSocket().send(JSON.stringify(action));
+  game.setPlayerTwo("PLAYER TWO"); // FIXME get it from a query param
   // TODO set player two id and create a web socket
-  res.json({ msg: "to be implemented" });
+  res.json({ id: game.getId(), gameMap: game.getGameMap() });
 });
 
 // ----- WebSocket endpoint
 app.ws("/ws-test/:id", (ws, req) => {
+  // FIXME Use a second parameter for discriminate between player
   let id = req.params.id;
   console.log(`In ws channel with id ${id}`);
   // Storing the ws in the corresponding game
   const game = gameStore.filter(game => game.id === id).pop();
-  game.setPlayerOneSocket(ws); // FIXME BECUZ
+  game.setPlayerOneSocket(ws); // FIXME handle the 'second player joining' case
   ws.on("open", msg => {
     console.log(`[${Date.now()}] Message received: ${msg}`);
     ws.send("ACK from server");
