@@ -61,13 +61,20 @@ app.get("/join/:id", (req, res) => {
 });
 
 // ----- WebSocket endpoint
-app.ws("/ws-test/:id", (ws, req) => {
+app.ws("/ws-test/:id/:playerNum", (ws, req) => {
   // FIXME Use a second parameter for discriminate between player
-  let id = req.params.id;
+  const id = req.params.id;
+  const playerNum = req.params.playerNum;
+
   console.log(`In ws channel with id ${id}`);
   // Storing the ws in the corresponding game
   const game = gameStore.filter(game => game.id === id).pop();
-  game.setPlayerOneSocket(ws); // FIXME handle the 'second player joining' case
+  if(playerNum === "one") {
+    game.setPlayerOneSocket(ws);
+  }
+  if(playerNum === "two") {
+    game.setPlayerTwoSocket(ws);
+  }
   ws.on("open", msg => {
     console.log(`[${Date.now()}] Message received: ${msg}`);
     ws.send("ACK from server");
@@ -89,7 +96,14 @@ app.get("/sendws/:id", (req, res) => {
   let requestedID = req.params.id;
   let requestedGame = gameStore.filter(game => game.id === requestedID).pop();
   const socket = requestedGame.getPlayerOneSocket();
-  socket.send("Message sent from the server to the first player!!!");
+  socket.send(
+    JSON.stringify({ type: "TEST_WS_SEND" })
+  );
+  const socket2 = requestedGame.getPlayerTwoSocket();
+  socket2.send(
+    JSON.stringify({ type: "TEST_WS_SEND" })
+  );
+  res.json({msg: "Test messages sent"});
 });
 
 app.listen(port, () => {

@@ -45,13 +45,19 @@ class Game {
   }
 
   setPlayerOneSocket(so) {
-    //this.sockets.playerOneSocket = CircularJSON.stringify(so);
     this.sockets.playerOneSocket = so;
   }
 
+  setPlayerTwoSocket(so) {
+    this.sockets.playerTwoSocket = so;
+  }
+
   getPlayerOneSocket() {
-    //return CircularJSON.parse(this.sockets.playerOneSocket);
     return this.sockets.playerOneSocket;
+  }
+
+  getPlayerTwoSocket() {
+    return this.sockets.playerTwoSocket;
   }
 
   getStatus() {
