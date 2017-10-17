@@ -2,6 +2,7 @@ import express from "express";
 import expressWS from "express-ws";
 import cors from "cors";
 import { GameBuilder } from "./models/Game";
+import GameStore from "./models/GameStore";
 import util from "util";
 
 /* ---------- CONSTANTS */
@@ -13,8 +14,7 @@ app.use(cors()); // by default allowing everything =)
 expressWS(app);
 
 /* ---------- DATA */
-const gameStore = []; // TODO extract to a proper class / module
-const getGameById = id => gameStore.filter(game => game.id === id).pop();
+const gameStore = new GameStore();
 
 /* ---------- ROUTES */
 // Home
@@ -34,10 +34,11 @@ app.get("/newgame", (req, res) => {
 
 // ----- List of created games
 app.get("/games-list", (req, res) => {
-  let gamesId = gameStore.map(game => ({
+  let gamesId = gameStore.getStore().map(game => ({
     id: game.id,
     url: `http://localhost:${port}/game/${game.id}`,
-    join: `http://localhost:${port}/join/${game.id}`
+    join: `http://localhost:${port}/join/${game.id}`,
+    wstest: `http://localhost:${port}/sendws/${game.id}`
   }));
   res.json(gamesId);
 });
@@ -46,39 +47,33 @@ app.get("/games-list", (req, res) => {
 app.get("/game/:id", (req, res) => {
   console.log("[GET] Getting game by id");
   const requestedID = req.params.id;
-  const requestedGame = getGameById(requestedID);
+  const requestedGame = gameStore.getGameById(requestedID);
   res.json(requestedGame);
 });
 
 // ----- Join an existing game
 app.get("/join/:id", (req, res) => {
-  const game = getGameById(req.params.id);
+  const game = gameStore.getGameById(req.params.id);
   const action = { type: "SWITCH_TO_GAME_SCREEN" };
   game.getPlayerOneSocket().send(JSON.stringify(action));
   game.setPlayerTwo("PLAYER TWO"); // FIXME get it from a query param
-  // TODO set player two id and create a web socket
   res.json({ id: game.getId(), gameMap: game.getGameMap() });
 });
 
 // ----- WebSocket endpoint
 app.ws("/channel/:id/:playerNum", (ws, req) => {
-  // FIXME Use a second parameter for discriminate between player
   const id = req.params.id;
   const playerNum = req.params.playerNum;
+  const game = gameStore.getGameById(id);
 
-  console.log(`In ws channel with id ${id}`);
-  // Storing the ws in the corresponding game
-  const game = gameStore.filter(game => game.id === id).pop();
   if(playerNum === "one") {
     game.setPlayerOneSocket(ws);
   }
+
   if(playerNum === "two") {
     game.setPlayerTwoSocket(ws);
   }
-  ws.on("open", msg => {
-    console.log(`[${Date.now()}] Message received: ${msg}`);
-    ws.send("ACK from server");
-  });
+
   ws.on("message", message => {
     console.log("[WS] Incoming message", message);
   });
@@ -93,8 +88,8 @@ app.get("/store", (req, res) => {
 });
 
 app.get("/sendws/:id", (req, res) => {
-  let requestedID = req.params.id;
-  let requestedGame = gameStore.filter(game => game.id === requestedID).pop();
+  const requestedID = req.params.id;
+  const requestedGame = gameStore.getGameById(requestedID);
   const socket = requestedGame.getPlayerOneSocket();
   socket.send(
     JSON.stringify({ type: "TEST_WS_SEND" })
