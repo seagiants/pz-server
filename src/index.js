@@ -61,7 +61,7 @@ app.get("/join/:id", (req, res) => {
 });
 
 // ----- WebSocket endpoint
-app.ws("/ws-test/:id/:playerNum", (ws, req) => {
+app.ws("/channel/:id/:playerNum", (ws, req) => {
   // FIXME Use a second parameter for discriminate between player
   const id = req.params.id;
   const playerNum = req.params.playerNum;
