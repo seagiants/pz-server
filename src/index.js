@@ -3,6 +3,7 @@ import expressWS from "express-ws";
 import cors from "cors";
 import { GameBuilder } from "./models/Game";
 import GameStore from "./models/GameStore";
+import Map from "./models/Map";
 import util from "util";
 
 /* ---------- CONSTANTS */
@@ -27,7 +28,10 @@ app.get("/newgame", (req, res) => {
   let playerName = req.query.playerName;
   console.log(`[GET] Game creation request by ${playerName}`);
   let builder = new GameBuilder();
-  let newGame = builder.withPlayerOne(playerName).build();
+  let newGame = builder
+    .withPlayerOne(playerName)
+    .withGameMap(new Map(20, 20))
+    .build();
   gameStore.push(newGame);
   res.json(newGame);
 });
@@ -66,11 +70,11 @@ app.ws("/channel/:id/:playerNum", (ws, req) => {
   const playerNum = req.params.playerNum;
   const game = gameStore.getGameById(id);
 
-  if(playerNum === "one") {
+  if (playerNum === "one") {
     game.setPlayerOneSocket(ws);
   }
 
-  if(playerNum === "two") {
+  if (playerNum === "two") {
     game.setPlayerTwoSocket(ws);
   }
 
@@ -81,24 +85,19 @@ app.ws("/channel/:id/:playerNum", (ws, req) => {
 
 // ----- SPECIALS
 // List games in store, for debug only
-app.get("/store", (req, res) => {
-  // FIXME we do that becuz of Circular structure bug
-  const sanitized = util.inspect(gameStore);
-  res.json(sanitized);
+app.get("/map-generation", (req, res) => {
+  const genMap = new Map(10, 10);
+  res.json(genMap);
 });
 
 app.get("/sendws/:id", (req, res) => {
   const requestedID = req.params.id;
   const requestedGame = gameStore.getGameById(requestedID);
   const socket = requestedGame.getPlayerOneSocket();
-  socket.send(
-    JSON.stringify({ type: "TEST_WS_SEND" })
-  );
+  socket.send(JSON.stringify({ type: "TEST_WS_SEND" }));
   const socket2 = requestedGame.getPlayerTwoSocket();
-  socket2.send(
-    JSON.stringify({ type: "TEST_WS_SEND" })
-  );
-  res.json({msg: "Test messages sent"});
+  socket2.send(JSON.stringify({ type: "TEST_WS_SEND" }));
+  res.json({ msg: "Test messages sent" });
 });
 
 app.listen(port, () => {
