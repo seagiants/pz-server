@@ -88,11 +88,9 @@ class Map {
     let cristalsOnMap = 0;
     let mapWithCristals = [];
     while (cristalsOnMap < cristalsNumber) {
-      console.log("cristals generation");
       // get random cell
       const randX = random(0, x - 1);
       const randY = random(0, y - 1);
-      console.log(`at ${randX} - ${randY}`)
       // FIXME check if the cell is not already a cristal
       mapWithCristals = mapWithCells.map(cell => {
         if(cell.x === randX && cell.y === randY) {
@@ -105,8 +103,39 @@ class Map {
         }
       });
     }
+    // TODO create landing points fot the two players
+    let mapWithLandingPoints = [];
+    let isLP1Created = false;
+    let isLP2Created = false;
+    while (!isLP1Created || !isLP2Created) {
+      const randX = random(0, x - 1);
+      const randY = random(0, y - 1);
+      if (!isLP1Created) {
+        mapWithLandingPoints = mapWithCristals.map(cell => {
+          if (cell.x === randX && cell.y === randY) {
+            cell.cellType = "landingPoint1";
+            cell.color = "crimson";
+            isLP1Created = true;
+            return cell;
+          } else {
+            return cell;
+          }
+        })
+      } else {
+        mapWithLandingPoints = mapWithCristals.map(cell => {
+          if (cell.x === randX && cell.y === randY) {
+            cell.cellType = "landingPoint2";
+            cell.color = "crimson";
+            isLP2Created = true;
+            return cell;
+          } else {
+            return cell;
+          }
+        })
+      }
+    }
 
-    const finalMap = mapWithCristals;
+    const finalMap = mapWithLandingPoints;
 
     return finalMap;
   }
