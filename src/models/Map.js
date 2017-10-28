@@ -59,7 +59,7 @@ class Map {
           x: i,
           y: j,
           cellType: baseType,
-          hidden: false,
+          hidden: true, // change to false to debug
           color: colors[baseType]
         });
       }
@@ -78,7 +78,6 @@ class Map {
         return {
           ...currentCell,
           cellType: computedType,
-          hidden: false, // TODO true is non debug mode
           color: colors[computedType]
         };
       }
@@ -93,7 +92,7 @@ class Map {
       const randY = random(0, y - 1);
       // FIXME check if the cell is not already a cristal
       mapWithCristals = mapWithCells.map(cell => {
-        if(cell.x === randX && cell.y === randY) {
+        if (cell.x === randX && cell.y === randY) {
           cell.cellType = "cristal";
           cell.color = "gold";
           cristalsOnMap++;
@@ -103,7 +102,7 @@ class Map {
         }
       });
     }
-    // TODO create landing points fot the two players
+
     let mapWithLandingPoints = [];
     let isLP1Created = false;
     let isLP2Created = false;
@@ -115,23 +114,25 @@ class Map {
           if (cell.x === randX && cell.y === randY) {
             cell.cellType = "landingPoint1";
             cell.color = "crimson";
+            cell.hidden = false;
             isLP1Created = true;
             return cell;
           } else {
             return cell;
           }
-        })
+        });
       } else {
         mapWithLandingPoints = mapWithCristals.map(cell => {
           if (cell.x === randX && cell.y === randY) {
             cell.cellType = "landingPoint2";
             cell.color = "crimson";
+            cell.hidden = false;
             isLP2Created = true;
             return cell;
           } else {
             return cell;
           }
-        })
+        });
       }
     }
 
