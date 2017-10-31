@@ -85,14 +85,15 @@ class Map {
 
     const cristalsNumber = 4;
     let cristalsOnMap = 0;
-    let mapWithCristals = [];
+    //Initialization on mapWithCells to support 0 crystalMap at start
+    let mapWithCristals = mapWithCells;
     while (cristalsOnMap < cristalsNumber) {
       // get random cell
       const randX = random(0, x - 1);
       const randY = random(0, y - 1);
       // FIXME check if the cell is not already a cristal
       mapWithCristals = mapWithCells.map(cell => {
-        if (cell.x === randX && cell.y === randY) {
+        if (cell.x === randX && cell.y === randY && cell.cellType !== "cristal") {
           cell.cellType = "cristal";
           cell.color = "gold";
           cristalsOnMap++;
