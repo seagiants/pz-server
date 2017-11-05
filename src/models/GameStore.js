@@ -1,5 +1,5 @@
 /*
- Where games are store
+ Where games are stored
 */
 
 class GameStore {

@@ -1,6 +1,5 @@
 import uuidV4 from "uuid/v4";
 import CircularJSON from "circular-json";
-import { generateMap } from "../engine/map";
 
 /* Game statuses */
 export const statuses = {
@@ -12,7 +11,7 @@ export const statuses = {
 class Game {
   constructor() {
     this.id = uuidV4();
-    this.gameMap = generateMap(20, 20);
+    this.gameMap = null;
     this.players = {
       playerOne: null,
       playerTwo: null
@@ -22,6 +21,7 @@ class Game {
       playerTwoSocket: null
     }
     this.status = statuses.WAITING_FOR_SECOND_PLAYER;
+    this.turn = "playerOne";
   }
 
   getId() {
@@ -62,6 +62,10 @@ class Game {
 
   getStatus() {
     return this.status;
+  }
+
+  getTurn() {
+    return this.turn;
   }
 }
 

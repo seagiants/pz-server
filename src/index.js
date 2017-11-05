@@ -61,7 +61,7 @@ app.get("/join/:id", (req, res) => {
   const action = { type: "SWITCH_TO_GAME_SCREEN" };
   game.getPlayerOneSocket().send(JSON.stringify(action));
   game.setPlayerTwo("PLAYER TWO"); // FIXME get it from a query param
-  res.json({ id: game.getId(), gameMap: game.getGameMap() });
+  res.json({ id: game.getId(), gameMap: game.getGameMap(), turn: game.getTurn() });
 });
 
 // ----- WebSocket endpoint
