@@ -5,25 +5,28 @@ const check = event => {
   if (event.type === undefined || event.type === null) {
     return false;
   }
-  if(event.id === undefined || event.id === null) {
-    return false;
-  }
   return true;
 };
 
 /* Manage the processing depending on the event type */
-const eventManager = (event) => {
-  if (!check(event)) {
-    throw new Error("Event received is not valid");
+class EventManager {
+  constructor(game) {
+      this._game = game;
   }
-  switch (event.type) {
-    case CREATE_GAME:
-      console.log("Create game event");
-      return {};
-    default:
-      console.log("Unknown event");
-      return null;
-  }
-};
 
-export default eventManager;
+  handleEvent(event) {
+    if (!check(event)) {
+      throw new Error("Event received is not valid");
+    }
+    switch (event.type) {
+      case "END_TURN":
+        console.log("end turn event");
+        // TODO implement
+      default:
+        console.log("Unknown event");
+        return null;
+    }
+  }
+}
+
+export default EventManager;

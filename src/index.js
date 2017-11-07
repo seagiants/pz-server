@@ -5,6 +5,7 @@ import { GameBuilder } from "./models/Game";
 import GameStore from "./models/GameStore";
 import Map from "./models/Map";
 import util from "util";
+import EventManager from "./events/EventManager";
 
 /* ---------- CONSTANTS */
 const port = 9000;
@@ -80,6 +81,10 @@ app.ws("/channel/:id/:playerNum", (ws, req) => {
 
   ws.on("message", message => {
     console.log("[WS] Incoming message", message);
+    const event = JSON.parse(message);
+    // FIXME where to instatiate the event manager ?
+    const eventManager = new EventManager(game);
+    eventManager.handleEvent(event);
   });
 });
 
