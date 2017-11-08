@@ -62,7 +62,11 @@ app.get("/join/:id", (req, res) => {
   const action = { type: "SWITCH_TO_GAME_SCREEN" };
   game.getPlayerOneSocket().send(JSON.stringify(action));
   game.setPlayerTwo("PLAYER TWO"); // FIXME get it from a query param
-  res.json({ id: game.getId(), gameMap: game.getGameMap(), turn: game.getTurn() });
+  res.json({
+    id: game.getId(),
+    gameMap: game.getGameMap(),
+    turn: game.getTurn()
+  });
 });
 
 // ----- WebSocket endpoint
@@ -80,11 +84,19 @@ app.ws("/channel/:id/:playerNum", (ws, req) => {
   }
 
   ws.on("message", message => {
-    console.log("[WS] Incoming message", message);
+    console.log("[WS] Incoming message ", message);
+    console.log("[WS] Game is ", game.getId());
+    console.log("[WS] Sending player is ", playerNum);
     const event = JSON.parse(message);
     // FIXME where to instatiate the event manager ?
     const eventManager = new EventManager(game);
-    eventManager.handleEvent(event);
+    const returnedEvent = eventManager.handleEvent(event);
+    if (playerNum === "two") {
+      game.getPlayerOneSocket().send(JSON.stringify(returnedEvent));
+    }
+    if (playerNum === "one") {
+      game.getPlayerTwoSocket().send(JSON.stringify(returnedEvent));
+    }
   });
 });
 

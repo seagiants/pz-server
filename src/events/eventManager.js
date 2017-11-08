@@ -11,7 +11,7 @@ const check = event => {
 /* Manage the processing depending on the event type */
 class EventManager {
   constructor(game) {
-      this._game = game;
+    this._game = game;
   }
 
   handleEvent(event) {
@@ -22,6 +22,7 @@ class EventManager {
       case "END_TURN":
         console.log("end turn event");
         // TODO implement
+        return { type: "CHANGE_PLAYER_TURN", data: "NONE" };
       default:
         console.log("Unknown event");
         return null;
